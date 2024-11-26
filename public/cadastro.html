@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Cadastro de Produtos</title>
+    <script>
+        async function carregarProdutos() {
+            const response = await fetch('/produtos');
+            const { produtos, lastAccess } = await response.json();
+            document.getElementById("ultimoAcesso").innerText = `Último acesso: ${lastAccess}`;
+
+            const tabela = document.getElementById("tabelaProdutos");
+            tabela.innerHTML = "<tr><th>Código</th><th>Descrição</th><th>Preço de Custo</th><th>Preço de Venda</th><th>Validade</th><th>Quantidade</th><th>Fabricante</th></tr>";
+
+            produtos.forEach(produto => {
+                const row = tabela.insertRow();
+                Object.values(produto).forEach(value => {
+                    const cell = row.insertCell();
+                    cell.innerText = value;
+                });
+            });
+        }
+        window.onload = carregarProdutos;
+    </script>
+</head>
+<body>
+    <h1>Cadastro de Produtos</h1>
+    <p id="ultimoAcesso"></p>
+    <form action="/cadastro" method="POST">
+        <label>Código de Barras: <input type="text" name="codigo" required></label>
+        <label>Descrição: <input type="text" name="descricao" required></label>
+        <label>Preço de Custo: <input type="number" step="0.01" name="precoCusto" required></label>
+        <label>Preço de Venda: <input type="number" step="0.01" name="precoVenda" required></label>
+        <label>Data de Validade: <input type="date" name="validade" required></label>
+        <label>Quantidade: <input type="number" name="quantidade" required></label>
+        <label>Fabricante: <input type="text" name="fabricante" required></label>
+        <button type="submit">Cadastrar Produto</button>
+    </form>
+    <h2>Produtos Cadastrados</h2>
+    <table id="tabelaProdutos"></table>
+</body>
+</html>
