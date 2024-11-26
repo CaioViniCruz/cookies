@@ -37,12 +37,12 @@ app.post("/login", (req, res) => {
   if (username) {
     req.session.username = username;
     res.cookie("lastAccess", new Date().toLocaleString());
-    console.log(req.cookies); // Verifica se o cookie está sendo configurado
-    res.redirect("/cadastro");
+    res.redirect("/cadastro"); // Redireciona para a página de cadastro
   } else {
     res.status(400).send("Nome de usuário é obrigatório.");
   }
 });
+
 
 
 app.get("/cadastro", (req, res) => {
