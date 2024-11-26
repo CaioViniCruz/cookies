@@ -11,27 +11,29 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Configuração da sessão
+// Sessão e cookies
 app.use(
   session({
     secret: "mySecret",
     resave: false,
     saveUninitialized: true,
     cookie: {
-      secure: process.env.NODE_ENV === "production", // Garantir cookie seguro apenas em produção
-      httpOnly: true, // Evitar acesso via JavaScript
-      sameSite: "strict", // Restrição de envio do cookie para o mesmo site
+      secure: process.env.NODE_ENV === "production", // Só ativa em produção
+      httpOnly: true,
+      sameSite: "strict",
     },
   })
 );
 
 // Página inicial
 app.get("/", (req, res) => {
+  console.log('Acessando página inicial');
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 // Página de login
 app.get("/login", (req, res) => {
+  console.log('Acessando página de login');
   res.sendFile(path.join(__dirname, "public", "login.html"));
 });
 
@@ -39,26 +41,23 @@ app.get("/login", (req, res) => {
 app.post("/login", (req, res) => {
   const { username } = req.body;
   if (username) {
-    // Armazena o nome do usuário na sessão
+    console.log(`Login bem-sucedido para o usuário: ${username}`);
     req.session.username = username;
-    
-    // Define o cookie de último acesso
     res.cookie("lastAccess", new Date().toLocaleString());
-    
-    // Redireciona para a página de cadastro
     res.redirect("/cadastro");
   } else {
+    console.log('Erro no login: nome de usuário não fornecido');
     res.status(400).send("Nome de usuário é obrigatório.");
   }
 });
 
 // Página de cadastro
 app.get("/cadastro", (req, res) => {
+  console.log('Acessando página de cadastro');
   if (req.session.username) {
-    // Se o usuário estiver logado, exibe o formulário de cadastro
     res.sendFile(path.join(__dirname, "public", "cadastro.html"));
   } else {
-    // Caso contrário, redireciona para o login
+    console.log('Usuário não logado, redirecionando para login');
     res.redirect("/login");
   }
 });
