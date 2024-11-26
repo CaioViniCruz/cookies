@@ -1,4 +1,3 @@
-console.log(process.env.NODE_ENV);
 
 const express = require("express");
 const session = require("express-session");
